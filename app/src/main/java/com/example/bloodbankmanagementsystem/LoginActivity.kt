@@ -4,10 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.example.bloodbankmanagementsystem.api.ServiceBuilder
 import com.example.bloodbankmanagementsystem.repository.UserRepository
 import com.google.android.material.snackbar.Snackbar
@@ -67,6 +64,7 @@ class LoginActivity : AppCompatActivity() {
                         if (response.success == true) {
                             ServiceBuilder.token = "Bearer " + response.token
 
+                            savepref()
                             startActivity(
                                 Intent(
                                     this@LoginActivity,
@@ -106,5 +104,15 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private suspend fun savepref() {
+        val edusername = edusername.text.toString()
+        val edpassword = edpassword.text.toString()
+        val sharedPref = getSharedPreferences("MyPref", MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putString("username", edusername)
+        editor.putString("password", edpassword)
+        editor.apply()
     }
 }
