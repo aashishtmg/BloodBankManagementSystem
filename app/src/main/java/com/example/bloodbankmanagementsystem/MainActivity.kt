@@ -127,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         val editor = sharedPref.edit()
         editor.clear()
         editor.apply()
+        startActivity(Intent(this,LoginActivity::class.java))
     }
 
     private fun requestPermission() {
