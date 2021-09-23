@@ -4,11 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/drawable/bg_rounded.xml" value="0.1" />
+        <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/drawable/customprogressbar_bg.xml" value="0.23066666666666666" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_donateblood.xml" value="0.264" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_signup.xml" value="0.264" />
+        <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_splash.xml" value="0.25" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_update_donor.xml" value="0.264" />
+        <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/customprogress_bg.xml" value="0.1" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/fragment_blood_stock_activity.xml" value="0.264" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/fragment_dashboard_activity.xml" value="0.264" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/layout/fragment_event_activity.xml" value="0.1" />
