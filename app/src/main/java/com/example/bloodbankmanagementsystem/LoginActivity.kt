@@ -69,11 +69,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginfunction() {
 
-        val username = edusername.text.toString()
+        val email = edusername.text.toString()
         val password = edpassword.text.toString()
 
         when {
-            username.isEmpty() -> {
+            email.isEmpty() -> {
                 edusername.error = "Enter email!!"
                 edusername.requestFocus()
             }
@@ -82,11 +82,11 @@ class LoginActivity : AppCompatActivity() {
                 edpassword.requestFocus()
             }
             else -> {
-                auth.signInWithEmailAndPassword(username, password)
+                auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             var intent =Intent(this,MainActivity::class.java)
-                            intent.putExtra("username",username)
+                            intent.putExtra("email",email)
                             startActivity(intent)
                             welcomenotifiy()
                             finish()
@@ -97,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         val repository = UserRepository()
-                        val response = repository.loginUser(username, password)
+                        val response = repository.loginUser(email, password)
                         if (response.success == true) {
                             ServiceBuilder.token = "Bearer " + response.token
 

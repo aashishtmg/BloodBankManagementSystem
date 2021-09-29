@@ -19,7 +19,7 @@ interface UserAPI {
     @FormUrlEncoded
     @POST("bloodbank/client/login")
     suspend fun checkUser(
-        @Field("username") username:String,
+        @Field("email") email:String,
         @Field("password") password:String
     ): Response<LoginResponse>
 }

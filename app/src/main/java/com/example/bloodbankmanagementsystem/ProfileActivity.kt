@@ -1,5 +1,6 @@
 package com.example.bloodbankmanagementsystem
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,16 +13,20 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import java.util.*
 
+@Suppress("UNREACHABLE_CODE", "DEPRECATION")
 class ProfileActivity : AppCompatActivity() {
     private var REQUEST_GALLERY_CODE = 0
     private val REQUEST_IMAGE_CAPTURE = 100
     private var imageUrl: String? = null
-    private val currentUser = FirebaseAuth.getInstance().currentUser
+    lateinit var auth: FirebaseAuth
+    var databaseReference: DatabaseReference? = null
+    var database: FirebaseDatabase? = null
 
     private lateinit var db: FirebaseFirestore
     private lateinit var imageUri: Uri
@@ -37,6 +42,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var progressbar: ProgressBar
     private lateinit var progressbar_pic: ProgressBar
 
+    @SuppressLint("SetText18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -53,6 +59,13 @@ class ProfileActivity : AppCompatActivity() {
         progressbar = findViewById(R.id.progressbar)
         progressbar_pic = findViewById(R.id.progressbar_pic)
 
+
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
+        databaseReference = database?.reference!!.child("USERS")
+
+        loadProfile()
+
         backhome.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
@@ -61,12 +74,18 @@ class ProfileActivity : AppCompatActivity() {
             popupMenu()
         }
 
+        profile_signout.setOnClickListener {
+            auth.signOut()
+            startActivity(Intent(this,LoginActivity::class.java))
+            finish()
+        }
+
         btnsave.setOnClickListener {
 
             val photo = when {
                 ::imageUri.isInitialized -> imageUri
-                currentUser?.photoUrl == null -> Uri.parse("https://picsum.photos/200")
-                else -> currentUser.photoUrl
+                auth.currentUser?.photoUrl == null -> Uri.parse("https://picsum.photos/200")
+                else -> auth.currentUser!!.photoUrl
             }
 
             val name = username.text.toString().trim()
@@ -84,7 +103,7 @@ class ProfileActivity : AppCompatActivity() {
 
             progressbar.visibility = View.VISIBLE
 
-            currentUser?.updateProfile(updates)
+            auth.currentUser?.updateProfile(updates)
                 ?.addOnCompleteListener { task ->
                     progressbar.visibility = View.INVISIBLE
                     if (task.isSuccessful) {
@@ -95,34 +114,33 @@ class ProfileActivity : AppCompatActivity() {
                 }
         }
 
-        currentUser?.let { user ->
+        auth.currentUser.let { user ->
             Glide.with(this)
-                .load(user.photoUrl)
+                .load(user?.photoUrl)
                 .into(camera)
         }
+    }
 
-        val sharedPref = getPreferences(Context.MODE_PRIVATE)
-        val isLogin = sharedPref.getString("Email", "1")
+    private fun loadProfile() {
+        val user = auth.currentUser
+        val userreference = databaseReference?.child(user?.uid!!)
 
-        if (isLogin == "1") {
-            var email = intent.getStringExtra("email")
-            if (email != null) {
-                setText(email)
-                with(sharedPref.edit())
-                {
-                    putString("Email", email)
-                    apply()
-                }
-            } else {
-                var intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+        eeemail.text = user?.email
 
+        userreference?.addValueEventListener(object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                username.text = snapshot.child("username").value.toString()
+                eefullname.text =
+                    snapshot.child("fname").value.toString() + " " + snapshot.child("lname").value.toString()
+                etphone.text = snapshot.child("phone").value.toString()
             }
-        } else {
-            if (isLogin != null) {
-                setText(isLogin)
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
             }
-        }
+
+        })
     }
 
     private fun popupMenu() {
@@ -140,20 +158,6 @@ class ProfileActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    private fun setText(email: String) {
-        db = FirebaseFirestore.getInstance()
-        if (email != null) {
-            db.collection("USERS").document(email).get()
-                .addOnSuccessListener { tasks ->
-                    username.text = tasks.get("username").toString()
-                    eefullname.text = tasks.get("Name").toString()
-                    address.text = tasks.get("address").toString()
-                    etphone.text = tasks.get("Phone").toString()
-                    eeemail.text = tasks.get("email").toString()
-                }
-        }
-    }
-
     private fun openCamera() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { pictureIntent ->
             pictureIntent.resolveActivity(this?.packageManager!!)?.also {
@@ -167,6 +171,7 @@ class ProfileActivity : AppCompatActivity() {
         intent.type = "image/*"
         startActivityForResult(intent, REQUEST_GALLERY_CODE)
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {

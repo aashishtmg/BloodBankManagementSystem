@@ -3,6 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Aadesh/StudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_donateblood.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/Aadesh/StudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_main.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/Aadesh/StudioProjects/BloodBankManagementSystem/app/src/main/res/layout/activity_profile.xml" value="0.18385416666666668" />
+        <entry key="..\:/Users/Aadesh/StudioProjects/BloodBankManagementSystem/app/src/main/res/layout/fragment_blood_stock_activity.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/Aadesh/StudioProjects/BloodBankManagementSystem/app/src/main/res/layout/my_custom_layout.xml" value="0.4" />
+        <entry key="..\:/Users/Aadesh/StudioProjects/BloodBankManagementSystem/app/src/main/res/menu/gallery_camera.xml" value="0.18385416666666668" />
+        <entry key="..\:/Users/Aadesh/StudioProjects/BloodBankManagementSystem/app/src/main/res/menu/main_menu.xml" value="0.1" />
+        <entry key="..\:/Users/Aadesh/StudioProjects/BloodBankManagementSystem/app/src/main/res/menu/profile.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/drawable/back.xml" value="0.23378378378378378" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/drawable/bg_rounded.xml" value="0.1" />
         <entry key="..\:/Users/aashish/AndroidStudioProjects/BloodBankManagementSystem/app/src/main/res/drawable/button_bg.xml" value="0.15092592592592594" />
@@ -31,7 +39,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

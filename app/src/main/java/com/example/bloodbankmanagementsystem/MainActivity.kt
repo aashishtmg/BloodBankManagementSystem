@@ -4,11 +4,16 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -16,6 +21,7 @@ import com.example.bloodbankmanagementsystem.adapter.ViewPagerAdapter
 import com.example.bloodbankmanagementsystem.fragments.BloodStockActivity
 import com.example.bloodbankmanagementsystem.fragments.DashboardActivity
 import com.example.bloodbankmanagementsystem.fragments.EventActivity
+import com.example.bloodbankmanagementsystem.notification.NotificationsChannels
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -46,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         if (!hasPermission()) {
             requestPermission()
         }
+
         populateList()
         val adapter = ViewPagerAdapter(lstFragments, supportFragmentManager, lifecycle)
         viewpager2.adapter = adapter
@@ -67,10 +74,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_profile -> {
-                    Toast.makeText(this, "profile clicked", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, ProfileActivity::class.java))
                 }
                 R.id.nav_donateblood -> {
-                    Toast.makeText(this, "donateblood clicked", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, DonatebloodActivity::class.java))
                 }
                 R.id.nav_map -> {
 
@@ -96,11 +103,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun populateList() {
-        lstTitle=ArrayList<String>()
+        lstTitle = ArrayList<String>()
         lstTitle.add("DashBoard")
         lstTitle.add("Blood Stock")
         lstTitle.add("Events")
-        lstFragments=ArrayList<Fragment>()
+        lstFragments = ArrayList<Fragment>()
         lstFragments.add(DashboardActivity())
         lstFragments.add(BloodStockActivity())
         lstFragments.add(EventActivity())
@@ -111,11 +118,11 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("Log Out!!")
         builder.setMessage("Are you sure do you want to Logout ?")
         builder.setIcon(android.R.drawable.ic_dialog_alert)
-        builder.setPositiveButton("Yes") {_,_ ->
+        builder.setPositiveButton("Yes") { _, _ ->
             userlogout()
         }
-        builder.setNegativeButton("No") {_,_ ->
-            Toast.makeText(this,"Cancelled", Toast.LENGTH_SHORT).show()
+        builder.setNegativeButton("No") { _, _ ->
+            Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show()
         }
         val alertDialog: AlertDialog = builder.create()
         alertDialog.setCancelable(false)
@@ -123,11 +130,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun userlogout() {
-        val sharedPref = this.getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
-        val editor = sharedPref.edit()
+        val sharedpref =this?.getPreferences(Context.MODE_PRIVATE)?:return
+        val editsharedPref = this.getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
+        val editor = editsharedPref.edit()
         editor.clear()
         editor.apply()
-        startActivity(Intent(this,LoginActivity::class.java))
+
+        sharedpref.edit().remove("Email").apply()
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+        logoutnotify()
+    }
+
+    private fun logoutnotify() {
+        val notificationManager = NotificationManagerCompat.from(this)
+        val notificationChannels = NotificationsChannels(this)
+        notificationChannels.createNotificationChannels()
+
+        val notification = NotificationCompat.Builder(this, notificationChannels.channel_2)
+            .setSmallIcon(R.drawable.notification)
+            .setContentTitle("Blood Bank App")
+            .setContentText("See you again ...")
+            .setColor(Color.BLUE)
+            .build()
+
+        notificationManager.notify(2, notification)
     }
 
     private fun requestPermission() {
@@ -154,11 +181,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
 
-        if (counter + 2000 > System.currentTimeMillis()){
+        if (counter + 2000 > System.currentTimeMillis()) {
             super.onBackPressed()
             finish()
-        }
-        else {
+        } else {
             Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
         }
         counter = System.currentTimeMillis()
