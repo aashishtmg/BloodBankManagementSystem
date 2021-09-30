@@ -134,6 +134,7 @@ class ProfileActivity : AppCompatActivity() {
                 eefullname.text =
                     snapshot.child("fname").value.toString() + " " + snapshot.child("lname").value.toString()
                 etphone.text = snapshot.child("phone").value.toString()
+                address.text = snapshot.child("address").value.toString()
             }
 
             override fun onCancelled(error: DatabaseError) {
