@@ -4,8 +4,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
@@ -35,13 +34,13 @@ class RegisterUITest {
         onView(withId(R.id.edphone))
             .perform(typeText("9865036355"))
         onView(withId(R.id.edpassword))
-            .perform(scrollTo(), ViewActions.click())
+            .perform(scrollTo(), click())
             .perform(typeText("bikash"))
         onView(withId(R.id.confirmpassword))
-            .perform(scrollTo(), ViewActions.click())
+            .perform(scrollTo(),click())
             .perform(typeText("bikash"))
         closeSoftKeyboard()
-        onView(withId(R.id.btnsignup)).perform(scrollTo(), ViewActions.click())
-            .perform(ViewActions.click())
+        onView(withId(R.id.btnsignup)).perform(scrollTo(), click())
+            .perform(click())
     }
 }
