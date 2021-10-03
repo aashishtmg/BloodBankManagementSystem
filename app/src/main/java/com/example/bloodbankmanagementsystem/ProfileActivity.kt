@@ -1,9 +1,11 @@
 package com.example.bloodbankmanagementsystem
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,7 +18,9 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.*
 
 @Suppress("UNREACHABLE_CODE", "DEPRECATION")
@@ -27,6 +31,7 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
     var databaseReference: DatabaseReference? = null
     var database: FirebaseDatabase? = null
+    private lateinit var storageReference: StorageReference
 
     private lateinit var db: FirebaseFirestore
     private lateinit var imageUri: Uri
@@ -135,6 +140,7 @@ class ProfileActivity : AppCompatActivity() {
                     snapshot.child("fname").value.toString() + " " + snapshot.child("lname").value.toString()
                 etphone.text = snapshot.child("phone").value.toString()
                 address.text = snapshot.child("address").value.toString()
+                getuserpic()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -142,6 +148,15 @@ class ProfileActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun getuserpic() {
+        storageReference = FirebaseStorage.getInstance().reference.child("pics/${auth.currentUser?.uid.toString()}")
+        val localfile = File.createTempFile("tempImage","jpg")
+        storageReference.getFile(localfile).addOnSuccessListener {
+            val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
+            camera.setImageBitmap(bitmap)
+        }
     }
 
     private fun popupMenu() {
@@ -160,11 +175,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun openCamera() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { pictureIntent ->
-            pictureIntent.resolveActivity(this?.packageManager!!)?.also {
-                startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE)
-            }
-        }
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent,REQUEST_IMAGE_CAPTURE)
     }
 
     private fun openGallery() {
@@ -178,6 +190,17 @@ class ProfileActivity : AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             uploadImageAndSaveUri(imageBitmap)
+        }else if (requestCode == REQUEST_GALLERY_CODE && resultCode == RESULT_OK){
+            val selectedImage = data?.data
+            val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+            val contentResolver = contentResolver
+            val cursor =
+                contentResolver.query(selectedImage!!, filePathColumn, null, null, null)
+            cursor!!.moveToFirst()
+            val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+            imageUrl = cursor.getString(columnIndex)
+            camera.setImageBitmap(BitmapFactory.decodeFile(imageUrl))
+            cursor.close()
         }
     }
 
